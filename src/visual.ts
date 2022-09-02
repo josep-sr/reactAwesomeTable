@@ -27,30 +27,40 @@ export class Visual implements IVisual {
     this.target = options.element;
 
     ReactDOM.render(this.reactRoot, this.target);
-    debugger;
   }
 
   public update(options: VisualUpdateOptions) {
-    if (options.dataViews && options.dataViews[0]) {
-      const dataView: DataView = options.dataViews[0];
-      this.viewport = options.viewport;
-      const { width, height } = this.viewport;
-      const size = Math.min(width, height);
-      this.settings = VisualSettings.parse(dataView) as VisualSettings;
-      const object = this.settings.circle;
-
-      ReactAwesomeTable.update({
-        textLabel: dataView.metadata.columns[0].displayName,
-        textValue: dataView.single.value.toString(),
-        size: size,
-        borderWidth:
-          object && object.circleThickness ? object.circleThickness : undefined,
-        background:
-          object && object.circleColor ? object.circleColor : undefined,
-      });
-    } else {
-      this.clear();
+    if (!options) {
+      return;
     }
+    if (
+      !options.dataViews ||
+      !options.dataViews[0] ||
+      !options.dataViews[0].matrix ||
+      !options.dataViews[0].matrix.rows ||
+      !options.dataViews[0].matrix.rows.root ||
+      !options.dataViews[0].matrix.rows.root.children ||
+      !options.dataViews[0].matrix.rows.root.children.length ||
+      !options.dataViews[0].matrix.columns ||
+      !options.dataViews[0].matrix.columns.root ||
+      !options.dataViews[0].matrix.columns.root.children ||
+      !options.dataViews[0].matrix.columns.root.children.length
+    ) {
+      this.clear();
+      return;
+    }
+
+    const dataView: DataView = options.dataViews[0];
+    let matrixRows = options.dataViews[0].matrix;
+    this.viewport = options.viewport;
+    const { width, height } = this.viewport;
+    const size = Math.min(width, height);
+    console.log(options.dataViews[0].matrix);
+    ReactAwesomeTable.update({
+      matrix: options.dataViews[0].matrix,
+      textValue: "holis",
+      size: size,
+    });
   }
 
   public enumerateObjectInstances(

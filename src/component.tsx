@@ -17,8 +17,6 @@ export const initialState: State = {
 };
 
 export class ReactAwesomeTable extends React.Component<{}, State> {
-  private matrix: DataViewMatrix = null;
-
   constructor(props: any) {
     super(props);
     this.state = initialState;
@@ -41,11 +39,14 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
         <table>
           <thead>
             <tr>
-              <th>
+              <th
+                className="sticky-col"
+                onClick={() => this.holis({ patata: "sida" })}
+              >
                 <p>Project Name</p>
               </th>
-              <th>
-                <p>Project Status</p>
+              <th className="sticky-col">
+                <p>Progress</p>
               </th>
               {columnsValues?.map((property, index) => {
                 return (
@@ -60,7 +61,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
           </thead>
           <tbody>
             {rowsValues?.map((property, index) => {
-              debugger;
               const projectName = property.value as string;
               const rowData = Object.keys(property.values).map(
                 (key) => property.values[key].value
@@ -70,10 +70,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 .split("|")[0];
               return (
                 <tr key={index}>
-                  <td>
+                  <td className="sticky-col">
                     <p className="projectName">{projectName}</p>
                   </td>
-                  <td>
+                  <td className="sticky-col">
                     <p className="progressStauts">
                       {Number(progressStautsValue) + "%"}
                     </p>
@@ -89,7 +89,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   renderTableData(rowData: string[]) {
-    console.log(rowData);
     return rowData.map((elem, index) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
       return (
@@ -112,22 +111,23 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   renderBar(progress: number) {
     const style = {
       width: `${progress}%`,
-      backgroundColor: `#64b2d1`,
+      backgroundColor: progress !== 100 ? `#64b2d1` : `#8d8d8d`,
       height: `100%`,
     };
-
-    const animationStyle = {};
-
     return (
-      <div className="bar-progress bar-one" data-percentage={`${progress}%`}>
+      <div className="bar-progress bar-one">
         <div
           className="bar"
-          data-percentage={`${progress}%`}
+          data-percentage={progress !== 100 ? `${progress}%` : `Completed`}
           style={style}
         ></div>
         <span className="bar-value"></span>
       </div>
     );
+  }
+
+  private holis(patata) {
+    console.log(patata);
   }
 
   private static updateCallback: (data: object) => void = null;

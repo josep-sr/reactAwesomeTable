@@ -30,6 +30,7 @@ export class Visual implements IVisual {
   }
 
   public update(options: VisualUpdateOptions) {
+    this.clear();
     if (!options) {
       return;
     }
@@ -46,7 +47,6 @@ export class Visual implements IVisual {
       !options.dataViews[0].matrix.columns.root.children ||
       !options.dataViews[0].matrix.columns.root.children.length
     ) {
-      this.clear();
       return;
     }
 

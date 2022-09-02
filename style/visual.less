@@ -9,6 +9,18 @@ td {
   padding: 5px;
 }
 
+p {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.sticky-col {
+  position: sticky;
+  background-color: red;
+  left: 0;
+  z-index: 2;
+}
+
 .projectName {
   margin: 5px;
 }
@@ -61,7 +73,7 @@ table tr:nth-child(even) {
 .bar-graph-horizontal > div {
   float: left;
   margin-bottom: 8px;
-  width: 100%;
+  width: 90%;
 }
 
 .bar-graph-horizontal .bar-value {
@@ -86,8 +98,8 @@ table tr:nth-child(even) {
   color: #fff;
   content: attr(data-percentage);
   font-weight: 600;
-  position: absolute;
-  right: 4px;
+  position: relative;
+  left: 50%;
   top: 0px;
 }
 

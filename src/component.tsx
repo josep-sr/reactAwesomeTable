@@ -37,12 +37,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     const rowsValues = matrix?.rows?.root?.children;
 
     return (
-      <div
-        className="pivotTable"
-        aria-label="Grid"
-        pbi-focus-tracker-idx="99"
-        style={style}
-      >
+      <div className="mainDiv">
         <table>
           <thead>
             <tr>
@@ -67,12 +62,23 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             {rowsValues?.map((property, index) => {
               debugger;
               const projectName = property.value as string;
+              const rowData = Object.keys(property.values).map(
+                (key) => property.values[key].value
+              );
+              const progressStautsValue = rowData
+                .find((row) => row !== null)
+                .split("|")[0];
               return (
                 <tr key={index}>
-                  <td>{projectName}</td>
-                  {this.renderTableData(property.values)}
-                  {/* <td></td>
-                  <td>{this.renderBar(100)}</td> */}
+                  <td>
+                    <p className="projectName">{projectName}</p>
+                  </td>
+                  <td>
+                    <p className="progressStauts">
+                      {Number(progressStautsValue) + "%"}
+                    </p>
+                  </td>
+                  {this.renderTableData(rowData)}
                 </tr>
               );
             })}
@@ -82,16 +88,23 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     );
   }
 
-  renderTableData(values: any) {
-    console.log(values);
-    const dataGood = Object.keys(values).map((key) => values[key].value);
-    console.log(dataGood);
-    return values?.map((elem, index) => {
-      const cellValues = elem.value?.split("|");
+  renderTableData(rowData: string[]) {
+    console.log(rowData);
+    return rowData.map((elem, index) => {
+      const cellValue = elem == null ? "\u00A0" : elem.split("|");
       return (
-        <React.Fragment>
-          <td>{cellValues[0]}</td>
-        </React.Fragment>
+        <td>
+          {elem == null ? (
+            cellValue
+          ) : (
+            <div className="valueContent">
+              <section className="bar-graph bar-graph-horizontal bar-graph-one">
+                {this.renderBar(Number(cellValue[2]))}
+              </section>
+              <p className="infoCell">{cellValue[1]}</p>
+            </div>
+          )}
+        </td>
       );
     });
   }
@@ -102,9 +115,17 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       backgroundColor: `#64b2d1`,
       height: `100%`,
     };
+
+    const animationStyle = {};
+
     return (
-      <div className="bar-progress">
-        <div style={style}></div>
+      <div className="bar-progress bar-one" data-percentage={`${progress}%`}>
+        <div
+          className="bar"
+          data-percentage={`${progress}%`}
+          style={style}
+        ></div>
+        <span className="bar-value"></span>
       </div>
     );
   }

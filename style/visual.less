@@ -1,34 +1,108 @@
-.innerContainer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+.mainDiv {
+  overflow-x: auto;
+  height: 100%;
+  width: 100%;
 }
 
-p {
+th,
+td {
+  padding: 5px;
+}
+
+.projectName {
+  margin: 5px;
+}
+.progressStauts {
+  text-align: center;
+  margin: 5px;
+}
+.infoCell {
   text-align: center;
 }
 
+thead tr th:first-child,
+tbody tr td:first-child {
+  width: 25em;
+  min-width: 25em;
+  max-width: 30em;
+}
+
+table tr:nth-child(odd) {
+  background-color: rgb(255, 255, 255);
+}
+
+table tr:nth-child(even) {
+  background-color: rgb(239, 239, 239);
+}
+
+// paramatrizar
+.valueContent {
+  width: 200px;
+}
+
 .bar-progress {
+  margin-left: 10px;
   width: 100px;
   height: 30px;
 }
 
-.bar-progress div::after {
+// borrar maybe
+.bar-graph .bar-value {
+  -webkit-animation: fade-in-text 2.2s 0.1s forwards;
+  -moz-animation: fade-in-text 2.2s 0.1s forwards;
+  animation: fade-in-text 2.2s 0.1s forwards;
+  opacity: 0;
+}
+
+.bar-graph-horizontal {
+  max-width: 380px;
+}
+
+.bar-graph-horizontal > div {
+  float: left;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.bar-graph-horizontal .bar-value {
+  float: left;
+  margin-top: 18px;
+  width: 2px;
+}
+
+.bar-graph-horizontal .bar {
+  border-radius: 6px;
+  height: 22px;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  width: 0;
+}
+
+.bar-graph-one .bar::after {
   -webkit-animation: fade-in-text 2.2s 0.1s forwards;
   -moz-animation: fade-in-text 2.2s 0.1s forwards;
   animation: fade-in-text 2.2s 0.1s forwards;
   color: #fff;
   content: attr(data-percentage);
-  font-weight: 700;
+  font-weight: 600;
   position: absolute;
   right: 4px;
   top: 0px;
 }
 
-.bar-progress div {
-  -webkit-animation: show-bar-ten 1.2s 0.2s forwards;
-  -moz-animation: show-bar-ten 1.2s 0.2s forwards;
-  animation: show-bar-ten 1.2s 0.2s forwards;
+.bar-graph-one .bar-one .bar {
+  background-color: #64b2d1;
+  -webkit-animation: show-bar-one 1.2s 0.1s forwards;
+  -moz-animation: show-bar-one 1.2s 0.1s forwards;
+  animation: show-bar-one 1.2s 0.1s forwards;
+}
+
+@-webkit-keyframes show-bar-one {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: attr(data-percentage);
+  }
 }

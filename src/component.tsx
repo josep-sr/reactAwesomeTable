@@ -40,12 +40,12 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
           <thead>
             <tr>
               <th
-                className="sticky-col"
+                className="sticky-col first-col"
                 onClick={() => this.holis({ patata: "sida" })}
               >
                 <p>Project Name</p>
               </th>
-              <th className="sticky-col">
+              <th className="sticky-col second-col">
                 <p>Progress</p>
               </th>
               {columnsValues?.map((property, index) => {
@@ -70,10 +70,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 .split("|")[0];
               return (
                 <tr key={index}>
-                  <td className="sticky-col">
+                  <td className="sticky-col first-col">
                     <p className="projectName">{projectName}</p>
                   </td>
-                  <td className="sticky-col">
+                  <td className="sticky-col second-col">
                     <p className="progressStauts">
                       {Number(progressStautsValue) + "%"}
                     </p>

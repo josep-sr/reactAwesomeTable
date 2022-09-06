@@ -44,5 +44,62 @@
       }
     }
   ],
-  "objects": {}
+  "objects": {
+    "circle": {
+      "displayName": "Width",
+      "properties": {
+        "widthFirstColumn": {
+          "displayName": "Width First Column",
+          "description": "The circle thickness.",
+          "type": {
+            "numeric": true
+          }
+        },
+        "progressBar": {
+          "displayName": "Progress Bar",
+          "description": "The fill color of the Progress Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "backgroundBar": {
+          "displayName": "Background Bar",
+          "description": "The fill color of the Background Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "completedBar": {
+          "displayName": "Completed Bar",
+          "description": "The fill color of the Completed Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textColorBar": {
+          "displayName": "Text Bar",
+          "description": "The fill color of the Text Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

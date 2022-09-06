@@ -51,15 +51,25 @@ export class Visual implements IVisual {
     }
 
     const dataView: DataView = options.dataViews[0];
-    let matrixRows = options.dataViews[0].matrix;
     this.viewport = options.viewport;
     const { width, height } = this.viewport;
     const size = Math.min(width, height);
-    console.log(options.dataViews[0].matrix);
+    this.settings = VisualSettings.parse(dataView) as VisualSettings;
+    const object = this.settings.circle;
+
     ReactAwesomeTable.update({
       matrix: options.dataViews[0].matrix,
-      textValue: "holis",
       size: size,
+      widthFirstColumn:
+        object && object.widthFirstColumn ? object.widthFirstColumn : 100,
+      progressBar:
+        object && object.progressBar ? object.progressBar : undefined,
+      backgroundBar:
+        object && object.backgroundBar ? object.backgroundBar : undefined,
+      completedBar:
+        object && object.completedBar ? object.completedBar : undefined,
+      textColorBar:
+        object && object.textColorBar ? object.textColorBar : undefined,
     });
   }
 

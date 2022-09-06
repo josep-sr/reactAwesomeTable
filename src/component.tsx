@@ -4,33 +4,51 @@ import DataViewMatrix = powerbi.DataViewMatrix;
 
 export interface State {
   matrix: DataViewMatrix;
-  textValue: string;
   size: number;
-  background?: string;
-  borderWidth?: number;
+  widthFirstColumn?: number;
+  progressBar?: string;
+  backgroundBar?: string;
+  completedBar?: string;
+  textColorBar?: string;
 }
 
 export const initialState: State = {
   matrix: null,
-  textValue: "",
   size: 200,
+  widthFirstColumn: 400,
 };
 
 export class ReactAwesomeTable extends React.Component<{}, State> {
+  private progressBar: string;
+  private backgroundBar: string;
+  private completedBar: string;
+  private textColorBar: string;
+
   constructor(props: any) {
     super(props);
     this.state = initialState;
   }
 
   render() {
-    const { matrix, textValue, size, background, borderWidth } = this.state;
-    debugger;
+    const {
+      matrix,
+      size,
+      widthFirstColumn,
+      progressBar,
+      backgroundBar,
+      completedBar,
+      textColorBar,
+    } = this.state;
     const style: React.CSSProperties = {
       width: size,
       height: size,
-      background,
-      borderWidth,
     };
+
+    this.progressBar = progressBar;
+    this.backgroundBar = backgroundBar;
+    this.completedBar = completedBar;
+    this.textColorBar = textColorBar;
+
     const columnsValues = matrix?.columns?.root?.children;
     const rowsValues = matrix?.rows?.root?.children;
 
@@ -41,14 +59,24 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             <tr>
               <th
                 className="sticky-col first-col"
-                onClick={() => this.holis({ patata: "sida" })}
+                onClick={() => this.testClick({ patata: "test" })}
+                style={{ minWidth: widthFirstColumn + "px" }}
               >
                 <p>Project Name</p>
               </th>
-              <th className="sticky-col second-col">
+              <th
+                className="sticky-col second-col"
+                style={{ left: widthFirstColumn + "px" }}
+              >
+                <p>Completion Date</p>
+              </th>
+              <th
+                className="sticky-col third-col"
+                style={{ left: widthFirstColumn + 145 + "px" }}
+              >
                 <p>Progress</p>
               </th>
-              {columnsValues?.map((property, index) => {
+              {columnsValues?.map((property) => {
                 return (
                   <React.Fragment>
                     <th>
@@ -67,13 +95,28 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               );
               const progressStautsValue = rowData
                 .find((row) => row !== null)
+                .split("|")[1];
+              const completionDate = rowData
+                .find((row) => row !== null)
                 .split("|")[0];
               return (
                 <tr key={index}>
-                  <td className="sticky-col first-col">
+                  <td
+                    className="sticky-col first-col"
+                    style={{ minWidth: widthFirstColumn + "px" }}
+                  >
                     <p className="projectName">{projectName}</p>
                   </td>
-                  <td className="sticky-col second-col">
+                  <td
+                    className="sticky-col second-col"
+                    style={{ left: widthFirstColumn + "px" }}
+                  >
+                    <p className="completionDate">{completionDate}</p>
+                  </td>
+                  <td
+                    className="sticky-col second-col"
+                    style={{ left: widthFirstColumn + 145 + "px" }}
+                  >
                     <p className="progressStauts">
                       {Number(progressStautsValue) + "%"}
                     </p>
@@ -89,7 +132,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   renderTableData(rowData: string[]) {
-    return rowData.map((elem, index) => {
+    return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
       return (
         <td>
@@ -98,9 +141,9 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
           ) : (
             <div className="valueContent">
               <section className="bar-graph bar-graph-horizontal bar-graph-one">
-                {this.renderBar(Number(cellValue[2]))}
+                {this.renderBar(Number(cellValue[3]))}
               </section>
-              <p className="infoCell">{cellValue[1]}</p>
+              <p className="infoCell">{cellValue[2]}</p>
             </div>
           )}
         </td>
@@ -111,23 +154,35 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   renderBar(progress: number) {
     const style = {
       width: `${progress}%`,
-      backgroundColor: progress !== 100 ? `#64b2d1` : `#8d8d8d`,
+      backgroundColor: progress !== 100 ? this.progressBar : this.completedBar,
       height: `100%`,
     };
     return (
-      <div className="bar-progress bar-one">
+      <React.Fragment>
+        <div className="bar-value">
+          <div
+            className="bar-value-element"
+            style={{ color: this.textColorBar }}
+          >
+            {progress !== 100 ? `${progress}%` : `Completed`}
+          </div>
+        </div>
         <div
-          className="bar"
-          data-percentage={progress !== 100 ? `${progress}%` : `Completed`}
-          style={style}
-        ></div>
-        <span className="bar-value"></span>
-      </div>
+          className="bar-progress bar-one"
+          style={{ background: this.backgroundBar }}
+        >
+          <div
+            className="bar"
+            data-percentage={progress !== 100 ? `${progress}%` : `Completed`}
+            style={style}
+          ></div>
+        </div>
+      </React.Fragment>
     );
   }
 
-  private holis(patata) {
-    console.log(patata);
+  private testClick(test) {
+    console.log(test);
   }
 
   private static updateCallback: (data: object) => void = null;

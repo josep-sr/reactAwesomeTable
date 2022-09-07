@@ -17,6 +17,7 @@ import { ReactAwesomeTable, initialState } from "./component";
 import "./../style/visual.less";
 
 export class Visual implements IVisual {
+  //https://docs.microsoft.com/en-us/power-bi/developer/visuals/power-bi-custom-visuals-certified
   private target: HTMLElement;
   private reactRoot: React.ComponentElement<any, any>;
   private viewport: IViewport;

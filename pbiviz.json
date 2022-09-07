@@ -5,12 +5,15 @@
     "guid": "reactAwesomeTableFF2C1F5BE6224763868D292A5C481866",
     "visualClassName": "Visual",
     "version": "1.0.0",
-    "description": "",
-    "supportUrl": "",
+    "description": "Custom Matrix Table",
+    "supportUrl": "https://community.powerbi.com",
     "gitHubUrl": ""
   },
   "apiVersion": "3.8.0",
-  "author": { "name": "", "email": "" },
+  "author": {
+    "name": "Josep Sugrañes",
+    "email": "josep.sugranes@clearpeaks.com"
+  },
   "assets": { "icon": "assets/icon.png" },
   "externalJS": [],
   "style": "style/visual.less",

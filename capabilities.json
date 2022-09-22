@@ -85,6 +85,17 @@
             }
           }
         },
+        "textColorBar": {
+          "displayName": "Text Bar",
+          "description": "The fill color of the Text Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
         "completedBar": {
           "displayName": "Completed Bar",
           "description": "The fill color of the Completed Bar.",
@@ -96,9 +107,42 @@
             }
           }
         },
-        "textColorBar": {
-          "displayName": "Text Bar",
-          "description": "The fill color of the Text Bar.",
+        "onTrackBar": {
+          "displayName": "On Track Bar",
+          "description": "The fill color of the On Track Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "delayedBar": {
+          "displayName": "Delayed Bar",
+          "description": "The fill color of the Delayed Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "cancelledBar": {
+          "displayName": "Cancelled Bar",
+          "description": "The fill color of the Cancelled Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "overdueBar": {
+          "displayName": "Overdue Bar",
+          "description": "The fill color of the Overdue Bar.",
           "type": {
             "fill": {
               "solid": {

@@ -7,7 +7,7 @@ export interface State {
   size: number;
   widthFirstColumn?: number;
   widthCompaniesColumn?: number;
-  progressBar?: string;
+  onTrackBar?: string;
   backgroundBar?: string;
   completedBar?: string;
   textColorBar?: string;
@@ -36,7 +36,7 @@ export const colorsStatus = [
 ];
 
 export class ReactAwesomeTable extends React.Component<{}, State> {
-  private progressBar: string;
+  private onTrackBar: string;
   private backgroundBar: string;
   private completedBar: string;
   private textColorBar: string;
@@ -51,7 +51,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       matrix,
       size,
       widthFirstColumn,
-      progressBar,
+      onTrackBar,
       backgroundBar,
       completedBar,
       textColorBar,
@@ -61,7 +61,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       height: size,
     };
 
-    this.progressBar = progressBar;
+    this.onTrackBar = onTrackBar;
     this.backgroundBar = backgroundBar;
     this.completedBar = completedBar;
     this.textColorBar = textColorBar;
@@ -185,7 +185,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       backgroundColor: isNull
         ? greyColor
         : progress !== 100
-        ? this.progressBar
+        ? this.onTrackBar
         : this.completedBar,
       height: `100%`,
     };

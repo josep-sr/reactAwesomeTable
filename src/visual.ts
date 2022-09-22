@@ -81,8 +81,7 @@ export class Visual implements IVisual {
         object && object.widthCompaniesColumn
           ? object.widthCompaniesColumn
           : 200,
-      progressBar:
-        object && object.progressBar ? object.progressBar : undefined,
+      onTrackBar: object && object.onTrackBar ? object.onTrackBar : undefined,
       backgroundBar:
         object && object.backgroundBar ? object.backgroundBar : undefined,
       completedBar:

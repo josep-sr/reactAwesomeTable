@@ -9,6 +9,7 @@ import IViewport = powerbi.IViewport;
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
+import ISelectionManager = powerbi.extensibility.ISelectionManager;
 import { VisualSettings } from "./settings";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -22,8 +23,10 @@ export class Visual implements IVisual {
   private reactRoot: React.ComponentElement<any, any>;
   private viewport: IViewport;
   private settings: VisualSettings;
+  private selectionManager: ISelectionManager;
 
   constructor(options: VisualConstructorOptions) {
+    this.selectionManager = options.host.createSelectionManager();
     this.reactRoot = React.createElement(ReactAwesomeTable, {});
     this.target = options.element;
 
@@ -57,6 +60,17 @@ export class Visual implements IVisual {
     const size = Math.min(width, height);
     this.settings = VisualSettings.parse(dataView) as VisualSettings;
     const object = this.settings.circle;
+
+    document.addEventListener("contextmenu", (event) => {
+      console.log(event);
+      debugger;
+
+      this.selectionManager.showContextMenu(false, {
+        x: event.pageX,
+        y: event.pageY,
+      });
+      event.preventDefault();
+    });
 
     ReactAwesomeTable.update({
       matrix: options.dataViews[0].matrix,

@@ -49,11 +49,16 @@
   },
   "objects": {
     "circle": {
-      "displayName": "Width",
+      "displayName": "Table Style",
       "properties": {
         "widthFirstColumn": {
           "displayName": "Width First Column",
-          "description": "The circle thickness.",
+          "type": {
+            "numeric": true
+          }
+        },
+        "widthCompaniesColumn": {
+          "displayName": "Width Companies Column",
           "type": {
             "numeric": true
           }

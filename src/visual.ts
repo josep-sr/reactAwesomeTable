@@ -77,6 +77,10 @@ export class Visual implements IVisual {
       size: size,
       widthFirstColumn:
         object && object.widthFirstColumn ? object.widthFirstColumn : 100,
+      widthCompaniesColumn:
+        object && object.widthCompaniesColumn
+          ? object.widthCompaniesColumn
+          : 200,
       progressBar:
         object && object.progressBar ? object.progressBar : undefined,
       backgroundBar:

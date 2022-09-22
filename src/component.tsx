@@ -6,6 +6,7 @@ export interface State {
   matrix: DataViewMatrix;
   size: number;
   widthFirstColumn?: number;
+  widthCompaniesColumn?: number;
   progressBar?: string;
   backgroundBar?: string;
   completedBar?: string;
@@ -16,7 +17,23 @@ export const initialState: State = {
   matrix: null,
   size: 200,
   widthFirstColumn: 400,
+  widthCompaniesColumn: 200,
 };
+
+export interface objColors {}
+
+export const colorsStatus = [
+  "Completed",
+  { color: "#cfcfcf" },
+  "On Track",
+  { color: "#8dc989" },
+  "Delayed",
+  { color: "#d4d722" },
+  "Cancelled",
+  { color: "#463a3a" },
+  "Overdue",
+  { color: "#db5151" },
+];
 
 export class ReactAwesomeTable extends React.Component<{}, State> {
   private progressBar: string;
@@ -137,7 +154,17 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       return (
         <td>
           {elem == null ? (
-            cellValue
+            <div
+              className="valueContent"
+              style={{ width: this.state.widthCompaniesColumn + "px" }}
+            >
+              <section className="bar-graph bar-graph-horizontal bar-graph-one">
+                {this.renderBar(0, true)}
+              </section>
+              <p className="infoCell" style={{ height: "21px" }}>
+                {elem}
+              </p>
+            </div>
           ) : (
             <div className="valueContent">
               <section className="bar-graph bar-graph-horizontal bar-graph-one">
@@ -151,12 +178,18 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     });
   }
 
-  renderBar(progress: number) {
+  renderBar(progress: number, isNull: boolean = false) {
+    const greyColor = "#cfcfcf";
     const style = {
       width: `${progress}%`,
-      backgroundColor: progress !== 100 ? this.progressBar : this.completedBar,
+      backgroundColor: isNull
+        ? greyColor
+        : progress !== 100
+        ? this.progressBar
+        : this.completedBar,
       height: `100%`,
     };
+
     return (
       <React.Fragment>
         <div className="bar-value">
@@ -164,12 +197,12 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             className="bar-value-element"
             style={{ color: this.textColorBar }}
           >
-            {progress !== 100 ? `${progress}%` : `Completed`}
+            {isNull ? `NA` : progress !== 100 ? `${progress}%` : `Completed`}
           </div>
         </div>
         <div
           className="bar-progress bar-one"
-          style={{ background: this.backgroundBar }}
+          style={{ background: isNull ? greyColor : this.backgroundBar }}
         >
           <div
             className="bar"

@@ -1,45 +1,29 @@
 import * as React from "react";
 import powerbi from "powerbi-visuals-api";
 import DataViewMatrix = powerbi.DataViewMatrix;
+import { TableSettings } from "./settings";
 
 export interface State {
   matrix: DataViewMatrix;
   size: number;
-  widthFirstColumn?: number;
-  widthCompaniesColumn?: number;
-  onTrackBar?: string;
-  backgroundBar?: string;
-  completedBar?: string;
-  textColorBar?: string;
+  // widthFirstColumn?: number;
+  // widthCompaniesColumn?: number;
+  // onTrackBar?: string;
+  // backgroundBar?: string;
+  // completedBar?: string;
+  // textColorBar?: string;
+  objectStyle?: TableSettings;
 }
 
 export const initialState: State = {
   matrix: null,
   size: 200,
-  widthFirstColumn: 400,
-  widthCompaniesColumn: 200,
+  // widthFirstColumn: 400,
+  // widthCompaniesColumn: 200,
 };
 
-export interface objColors {}
-
-export const colorsStatus = [
-  "Completed",
-  { color: "#cfcfcf" },
-  "On Track",
-  { color: "#8dc989" },
-  "Delayed",
-  { color: "#d4d722" },
-  "Cancelled",
-  { color: "#463a3a" },
-  "Overdue",
-  { color: "#db5151" },
-];
-
 export class ReactAwesomeTable extends React.Component<{}, State> {
-  private onTrackBar: string;
-  private backgroundBar: string;
-  private completedBar: string;
-  private textColorBar: string;
+  private objectStyle: TableSettings;
 
   constructor(props: any) {
     super(props);
@@ -50,24 +34,24 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     const {
       matrix,
       size,
-      widthFirstColumn,
-      onTrackBar,
-      backgroundBar,
-      completedBar,
-      textColorBar,
+
+      objectStyle,
     } = this.state;
     const style: React.CSSProperties = {
       width: size,
       height: size,
     };
 
-    this.onTrackBar = onTrackBar;
-    this.backgroundBar = backgroundBar;
-    this.completedBar = completedBar;
-    this.textColorBar = textColorBar;
+    if (objectStyle === undefined) {
+      return;
+    }
+
+    this.objectStyle = objectStyle;
 
     const columnsValues = matrix?.columns?.root?.children;
     const rowsValues = matrix?.rows?.root?.children;
+
+    console.log(rowsValues);
 
     return (
       <div className="mainDiv">
@@ -77,19 +61,19 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               <th
                 className="sticky-col first-col"
                 onClick={() => this.testClick({ patata: "test" })}
-                style={{ minWidth: widthFirstColumn + "px" }}
+                style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Project Name</p>
               </th>
               <th
                 className="sticky-col second-col"
-                style={{ left: widthFirstColumn + "px" }}
+                style={{ left: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Completion Date</p>
               </th>
               <th
                 className="sticky-col third-col"
-                style={{ left: widthFirstColumn + 145 + "px" }}
+                style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
               >
                 <p>Progress</p>
               </th>
@@ -120,19 +104,19 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 <tr key={index}>
                   <td
                     className="sticky-col first-col"
-                    style={{ minWidth: widthFirstColumn + "px" }}
+                    style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
                   >
                     <p className="projectName">{projectName}</p>
                   </td>
                   <td
                     className="sticky-col second-col"
-                    style={{ left: widthFirstColumn + "px" }}
+                    style={{ left: objectStyle.widthFirstColumn + "px" }}
                   >
                     <p className="completionDate">{completionDate}</p>
                   </td>
                   <td
                     className="sticky-col second-col"
-                    style={{ left: widthFirstColumn + 145 + "px" }}
+                    style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
                   >
                     <p className="progressStauts">
                       {Number(progressStautsValue) + "%"}
@@ -151,42 +135,57 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   renderTableData(rowData: string[]) {
     return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
+      debugger;
       return (
         <td>
-          {elem == null ? (
+          {
             <div
               className="valueContent"
-              style={{ width: this.state.widthCompaniesColumn + "px" }}
+              style={{ width: this.objectStyle.widthCompaniesColumn + "px" }}
             >
               <section className="bar-graph bar-graph-horizontal bar-graph-one">
-                {this.renderBar(0, true)}
+                {elem == null
+                  ? this.renderBar(0, "NA", elem)
+                  : this.renderBar(Number(cellValue[3]), cellValue[4], elem)}
               </section>
-              <p className="infoCell" style={{ height: "21px" }}>
-                {elem}
+              <p className="infoCell">
+                {elem == null
+                  ? elem
+                  : cellValue[4] === " Completed"
+                  ? cellValue[0]
+                  : cellValue[2]}
               </p>
             </div>
-          ) : (
-            <div className="valueContent">
-              <section className="bar-graph bar-graph-horizontal bar-graph-one">
-                {this.renderBar(Number(cellValue[3]))}
-              </section>
-              <p className="infoCell">{cellValue[2]}</p>
-            </div>
-          )}
+          }
         </td>
       );
     });
   }
 
-  renderBar(progress: number, isNull: boolean = false) {
-    const greyColor = "#cfcfcf";
+  renderBar(progress: number, status: string = "", isNull: any) {
+    let barColor: string = "";
+
+    if (status === "NA") {
+      barColor = this.objectStyle?.naBar;
+    } else if (status === " Completed") {
+      barColor = this.objectStyle?.completedBar;
+    } else if (status === " On Track") {
+      barColor = this.objectStyle?.onTrackBar;
+    } else if (status === " Delayed") {
+      barColor = this.objectStyle?.delayedBar;
+    } else if (status === " Cancelled") {
+      barColor = this.objectStyle?.cancelledBar;
+    } else if (status === " Overdue") {
+      barColor = this.objectStyle?.overdueBar;
+    } else if (status === " On Hold") {
+      barColor = this.objectStyle?.onHoldBar;
+    } else {
+      barColor = this.objectStyle?.noStatusBar;
+    }
+
     const style = {
       width: `${progress}%`,
-      backgroundColor: isNull
-        ? greyColor
-        : progress !== 100
-        ? this.onTrackBar
-        : this.completedBar,
+      backgroundColor: barColor,
       height: `100%`,
     };
 
@@ -195,14 +194,23 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
         <div className="bar-value">
           <div
             className="bar-value-element"
-            style={{ color: this.textColorBar }}
+            style={{ color: this.objectStyle?.textColorBar }}
           >
-            {isNull ? `NA` : progress !== 100 ? `${progress}%` : `Completed`}
+            {isNull == null
+              ? `NA`
+              : progress !== 100
+              ? `${progress}%`
+              : `Completed`}
           </div>
         </div>
         <div
           className="bar-progress bar-one"
-          style={{ background: isNull ? greyColor : this.backgroundBar }}
+          style={{
+            background:
+              isNull == null
+                ? this.objectStyle.naBar
+                : this.objectStyle.backgroundBar,
+          }}
         >
           <div
             className="bar"

@@ -10,7 +10,7 @@ import VisualObjectInstance = powerbi.VisualObjectInstance;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
 import ISelectionManager = powerbi.extensibility.ISelectionManager;
-import { VisualSettings } from "./settings";
+import { TableSettings, VisualSettings } from "./settings";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ReactAwesomeTable, initialState } from "./component";
@@ -59,11 +59,10 @@ export class Visual implements IVisual {
     const { width, height } = this.viewport;
     const size = Math.min(width, height);
     this.settings = VisualSettings.parse(dataView) as VisualSettings;
-    const object = this.settings.circle;
+    const objectStyle: TableSettings = this.settings.table;
 
     document.addEventListener("contextmenu", (event) => {
       console.log(event);
-      debugger;
 
       this.selectionManager.showContextMenu(false, {
         x: event.pageX,
@@ -75,19 +74,31 @@ export class Visual implements IVisual {
     ReactAwesomeTable.update({
       matrix: options.dataViews[0].matrix,
       size: size,
-      widthFirstColumn:
-        object && object.widthFirstColumn ? object.widthFirstColumn : 100,
-      widthCompaniesColumn:
-        object && object.widthCompaniesColumn
-          ? object.widthCompaniesColumn
-          : 200,
-      onTrackBar: object && object.onTrackBar ? object.onTrackBar : undefined,
-      backgroundBar:
-        object && object.backgroundBar ? object.backgroundBar : undefined,
-      completedBar:
-        object && object.completedBar ? object.completedBar : undefined,
-      textColorBar:
-        object && object.textColorBar ? object.textColorBar : undefined,
+      // widthFirstColumn:
+      //   objectStyle && objectStyle.widthFirstColumn
+      //     ? objectStyle.widthFirstColumn
+      //     : 100,
+      // widthCompaniesColumn:
+      //   objectStyle && objectStyle.widthCompaniesColumn
+      //     ? objectStyle.widthCompaniesColumn
+      //     : 200,
+      // onTrackBar:
+      //   objectStyle && objectStyle.onTrackBar
+      //     ? objectStyle.onTrackBar
+      //     : undefined,
+      // backgroundBar:
+      //   objectStyle && objectStyle.backgroundBar
+      //     ? objectStyle.backgroundBar
+      //     : undefined,
+      // completedBar:
+      //   objectStyle && objectStyle.completedBar
+      //     ? objectStyle.completedBar
+      //     : undefined,
+      // textColorBar:
+      //   objectStyle && objectStyle.textColorBar
+      //     ? objectStyle.textColorBar
+      //     : undefined,
+      objectStyle: objectStyle,
     });
   }
 

@@ -48,7 +48,7 @@
     "default": {}
   },
   "objects": {
-    "circle": {
+    "table": {
       "displayName": "Table Style",
       "properties": {
         "widthFirstColumn": {
@@ -143,6 +143,39 @@
         "overdueBar": {
           "displayName": "Overdue Bar",
           "description": "The fill color of the Overdue Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "onHoldBar": {
+          "displayName": "On Hold Bar",
+          "description": "The fill color of the On Hold Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "naBar": {
+          "displayName": "NA Bar",
+          "description": "The fill color of the NA Bar.",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "noStatusBar": {
+          "displayName": "No Status",
+          "description": "The fill color of the No Status Bar.",
           "type": {
             "fill": {
               "solid": {

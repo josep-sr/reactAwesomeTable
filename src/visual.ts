@@ -74,30 +74,6 @@ export class Visual implements IVisual {
     ReactAwesomeTable.update({
       matrix: options.dataViews[0].matrix,
       size: size,
-      // widthFirstColumn:
-      //   objectStyle && objectStyle.widthFirstColumn
-      //     ? objectStyle.widthFirstColumn
-      //     : 100,
-      // widthCompaniesColumn:
-      //   objectStyle && objectStyle.widthCompaniesColumn
-      //     ? objectStyle.widthCompaniesColumn
-      //     : 200,
-      // onTrackBar:
-      //   objectStyle && objectStyle.onTrackBar
-      //     ? objectStyle.onTrackBar
-      //     : undefined,
-      // backgroundBar:
-      //   objectStyle && objectStyle.backgroundBar
-      //     ? objectStyle.backgroundBar
-      //     : undefined,
-      // completedBar:
-      //   objectStyle && objectStyle.completedBar
-      //     ? objectStyle.completedBar
-      //     : undefined,
-      // textColorBar:
-      //   objectStyle && objectStyle.textColorBar
-      //     ? objectStyle.textColorBar
-      //     : undefined,
       objectStyle: objectStyle,
     });
   }

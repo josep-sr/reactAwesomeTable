@@ -5,16 +5,16 @@ import DataViewObjectsParser = dataViewObjectsParser.DataViewObjectsParser;
 
 export class TableSettings {
   public widthFirstColumn: number = 300;
-  public widthCompaniesColumn: number = 150;
-  public backgroundBar: string = "#F0F0F0";
+  public widthCompaniesColumn: number = 110;
+  public backgroundBar: string = "#eeeeee";
   public textColorBar: string = "#323232";
-  public completedBar: string = "#cfcfcf";
-  public onTrackBar: string = "#8dc989";
-  public delayedBar: string = "#d4d722";
+  public completedBar: string = "#b3b3b3";
+  public onTrackBar: string = "#0eb194";
+  public delayedBar: string = "#f9c05d";
   public cancelledBar: string = "#FA9494";
-  public overdueBar: string = "#db5151";
-  public onHoldBar: string = "#64b2d1";
-  public naBar: string = "#B8B6B6";
+  public overdueBar: string = "#de6a73";
+  public onHoldBar: string = "#155c9d";
+  public naBar: string = "#f0f6fc";
   public noStatusBar: string = "#e9e9e9";
 }
 

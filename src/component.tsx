@@ -2,6 +2,13 @@ import * as React from "react";
 import powerbi from "powerbi-visuals-api";
 import DataViewMatrix = powerbi.DataViewMatrix;
 import { TableSettings } from "./settings";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+
+type ThumbReact = {
+  left: number;
+  width: number;
+} | null;
 
 export interface State {
   matrix: DataViewMatrix;
@@ -24,6 +31,7 @@ export const initialState: State = {
 
 export class ReactAwesomeTable extends React.Component<{}, State> {
   private objectStyle: TableSettings;
+  private modalVisible: boolean = false;
 
   constructor(props: any) {
     super(props);
@@ -31,12 +39,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   render() {
-    const {
-      matrix,
-      size,
-
-      objectStyle,
-    } = this.state;
+    const { matrix, size, objectStyle } = this.state;
     const style: React.CSSProperties = {
       width: size,
       height: size,
@@ -100,6 +103,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               const completionDate = rowData
                 .find((row) => row !== null)
                 .split("|")[0];
+
               return (
                 <tr key={index}>
                   <td
@@ -128,16 +132,29 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             })}
           </tbody>
         </table>
+        {/* {this.renderModal()} */}
       </div>
     );
   }
 
+  // renderModal() {
+  //   const [showModal, setShowModal] = React.useState(this.modalVisible);
+  //   return (
+  //     <div className={showModal ? "show-modal" : "modal"}>
+  //       <div className="modal-content">
+  //         <span className="close-button">&times;</span>
+  //         <h1>Hello, I am a modal!</h1>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   renderTableData(rowData: string[]) {
     return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
-      debugger;
+
       return (
-        <td>
+        <td onClick={() => this.MyVerticallyCenteredModal(true)}>
           {
             <div
               className="valueContent"
@@ -244,5 +261,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
 
   public componentWillUnmount() {
     ReactAwesomeTable.updateCallback = null;
+  }
+
+  public MyVerticallyCenteredModal(props) {
+    console.log("holis");
+    this.modalVisible = true;
   }
 }

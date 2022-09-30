@@ -2,8 +2,6 @@ import * as React from "react";
 import powerbi from "powerbi-visuals-api";
 import DataViewMatrix = powerbi.DataViewMatrix;
 import { TableSettings } from "./settings";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 
 type ThumbReact = {
   left: number;
@@ -13,6 +11,7 @@ type ThumbReact = {
 export interface State {
   matrix: DataViewMatrix;
   size: number;
+  showModal?: boolean;
   // widthFirstColumn?: number;
   // widthCompaniesColumn?: number;
   // onTrackBar?: string;
@@ -25,21 +24,24 @@ export interface State {
 export const initialState: State = {
   matrix: null,
   size: 200,
+  showModal: false,
   // widthFirstColumn: 400,
   // widthCompaniesColumn: 200,
 };
 
 export class ReactAwesomeTable extends React.Component<{}, State> {
   private objectStyle: TableSettings;
-  private modalVisible: boolean = false;
-
+  private showModal: boolean;
+  private matrix: any;
   constructor(props: any) {
     super(props);
     this.state = initialState;
   }
 
   render() {
-    const { matrix, size, objectStyle } = this.state;
+    const { matrix, size, showModal, objectStyle } = this.state;
+    this.matrix = matrix;
+    this.showModal = showModal;
     const style: React.CSSProperties = {
       width: size,
       height: size,
@@ -63,7 +65,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             <tr>
               <th
                 className="sticky-col first-col"
-                onClick={() => this.testClick({ patata: "test" })}
+                // onClick={() => this.testClick({ patata: "test" })}
                 style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Project Name</p>
@@ -132,29 +134,42 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             })}
           </tbody>
         </table>
-        {/* {this.renderModal()} */}
+        {this.renderModal()}
       </div>
     );
   }
 
-  // renderModal() {
-  //   const [showModal, setShowModal] = React.useState(this.modalVisible);
-  //   return (
-  //     <div className={showModal ? "show-modal" : "modal"}>
-  //       <div className="modal-content">
-  //         <span className="close-button">&times;</span>
-  //         <h1>Hello, I am a modal!</h1>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  renderModal() {
+    return (
+      <div className={this.showModal ? "show-modal" : "modal"}>
+        <div className="modal-content">
+          <span className="close-button">&times;</span>
+          <h1>Hello, I am a modal!</h1>
+        </div>
+      </div>
+    );
+  }
+
+  setShowModal(arg0: boolean) {
+    debugger;
+    this.showModal = arg0;
+    ReactAwesomeTable.update({
+      matrix: this.matrix,
+      size: 200,
+      showModal: true,
+    });
+  }
 
   renderTableData(rowData: string[]) {
     return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
 
+      // function setShowModal(arg0: boolean): void {
+      //   throw new Error("Function not implemented.");
+      // }
+
       return (
-        <td onClick={() => this.MyVerticallyCenteredModal(true)}>
+        <td onClick={() => this.setShowModal(true)}>
           {
             <div
               className="valueContent"
@@ -265,6 +280,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
 
   public MyVerticallyCenteredModal(props) {
     console.log("holis");
-    this.modalVisible = true;
+    this.showModal = true;
   }
 }

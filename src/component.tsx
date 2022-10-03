@@ -12,6 +12,7 @@ export interface State {
   matrix: DataViewMatrix;
   size: number;
   showModal?: boolean;
+  errorMessage?: string;
   // widthFirstColumn?: number;
   // widthCompaniesColumn?: number;
   // onTrackBar?: string;
@@ -25,6 +26,7 @@ export const initialState: State = {
   matrix: null,
   size: 200,
   showModal: false,
+  errorMessage: "",
   // widthFirstColumn: 400,
   // widthCompaniesColumn: 200,
 };
@@ -32,6 +34,7 @@ export const initialState: State = {
 export class ReactAwesomeTable extends React.Component<{}, State> {
   private objectStyle: TableSettings;
   private showModal: boolean;
+  private errorMessage: string;
   private matrix: any;
   constructor(props: any) {
     super(props);
@@ -39,9 +42,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   render() {
-    const { matrix, size, showModal, objectStyle } = this.state;
+    const { matrix, size, showModal, errorMessage, objectStyle } = this.state;
     this.matrix = matrix;
     this.showModal = showModal;
+    this.errorMessage = errorMessage;
     const style: React.CSSProperties = {
       width: size,
       height: size,
@@ -143,20 +147,25 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     return (
       <div className={this.showModal ? "show-modal" : "modal"}>
         <div className="modal-content">
-          <span className="close-button">&times;</span>
-          <h1>Hello, I am a modal!</h1>
+          <span
+            className="close-button"
+            onClick={() => this.setShowModal(false)}
+          >
+            &times;
+          </span>
+          <h1>{this.errorMessage}</h1>
         </div>
       </div>
     );
   }
 
-  setShowModal(arg0: boolean) {
-    debugger;
+  setShowModal(arg0: boolean, errorMessage?: string) {
     this.showModal = arg0;
     ReactAwesomeTable.update({
       matrix: this.matrix,
       size: 200,
-      showModal: true,
+      showModal: arg0,
+      errorMessage: errorMessage,
     });
   }
 
@@ -169,7 +178,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       // }
 
       return (
-        <td onClick={() => this.setShowModal(true)}>
+        <td onClick={() => this.setShowModal(true, elem)}>
           {
             <div
               className="valueContent"
@@ -220,6 +229,8 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       backgroundColor: barColor,
       height: `100%`,
     };
+
+    // isNaN(progress)
 
     return (
       <React.Fragment>

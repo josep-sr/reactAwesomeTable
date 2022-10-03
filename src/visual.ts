@@ -74,6 +74,7 @@ export class Visual implements IVisual {
     ReactAwesomeTable.update({
       matrix: options.dataViews[0].matrix,
       size: size,
+      errorMessage: null,
       objectStyle: objectStyle,
     });
   }

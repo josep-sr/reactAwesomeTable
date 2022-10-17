@@ -62,8 +62,6 @@ export class Visual implements IVisual {
     const objectStyle: TableSettings = this.settings.table;
 
     document.addEventListener("contextmenu", (event) => {
-      console.log(event);
-
       this.selectionManager.showContextMenu(false, {
         x: event.pageX,
         y: event.pageY,

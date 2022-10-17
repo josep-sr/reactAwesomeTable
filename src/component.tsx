@@ -60,8 +60,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     const columnsValues = matrix?.columns?.root?.children;
     const rowsValues = matrix?.rows?.root?.children;
 
-    console.log(rowsValues);
-
     return (
       <div className="mainDiv">
         <table>
@@ -103,12 +101,26 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               const rowData = Object.keys(property.values).map(
                 (key) => property.values[key].value
               );
-              const progressStautsValue = rowData
-                .find((row) => row !== null)
-                .split("|")[1];
               const completionDate = rowData
                 .find((row) => row !== null)
                 .split("|")[0];
+
+              const progressStautsValue = rowData
+                .find((row) => row !== null)
+                .split("|")[1];
+
+              let isError: boolean = false;
+              if (
+                completionDate === null ||
+                completionDate === undefined ||
+                completionDate === "" ||
+                Number.isNaN(progressStautsValue)
+              ) {
+                isError = true;
+              }
+
+              debugger;
+              console.log(rowData);
 
               return (
                 <tr key={index}>
@@ -122,14 +134,21 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                     className="sticky-col second-col"
                     style={{ left: objectStyle.widthFirstColumn + "px" }}
                   >
-                    <p className="completionDate">{completionDate}</p>
+                    <p className="completionDate">
+                      {isError ? "Error" : completionDate}
+                    </p>
                   </td>
                   <td
-                    className="sticky-col second-col"
+                    className="sticky-col third-col-value"
                     style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
                   >
+                    <div className="svg-container">
+                      <svg width="17" height="17">
+                        <circle cx="8" cy="8" r="8" fill="red" />
+                      </svg>
+                    </div>
                     <p className="progressStauts">
-                      {Number(progressStautsValue) + "%"}
+                      {isError ? "Error" : Number(progressStautsValue) + "%"}
                     </p>
                   </td>
                   {this.renderTableData(rowData)}
@@ -147,13 +166,11 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     return (
       <div className={this.showModal ? "show-modal" : "modal"}>
         <div className="modal-content">
-          <span
-            className="close-button"
-            onClick={() => this.setShowModal(false)}
-          >
-            &times;
-          </span>
-          <h1>{this.errorMessage}</h1>
+          <a className="close-button" onClick={() => this.setShowModal(false)}>
+            X
+          </a>
+          <h1>Error Details</h1>
+          <p>{this.errorMessage}</p>
         </div>
       </div>
     );
@@ -172,22 +189,55 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   renderTableData(rowData: string[]) {
     return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
+      let isError: boolean = false;
+      let errorMessage: string;
 
-      // function setShowModal(arg0: boolean): void {
-      //   throw new Error("Function not implemented.");
-      // }
+      if (cellValue.length < 3 && cellValue.length > 1) {
+        isError = true;
+        errorMessage = cellValue[1];
+      } else if (cellValue.length === 6 && cellValue[5] !== "") {
+        isError = true;
+        errorMessage = cellValue[5];
+      }
+
+      let progress: string;
+      if (isError) {
+        progress = "Error";
+      } else if (elem == null) {
+        progress = "NA";
+      } else if (Number(cellValue[3]) === 100) {
+        progress = "Completed";
+      } else {
+        progress = Number(cellValue[3]) + "%";
+      }
+
+      let status: string = "";
+      if (isError) {
+        status = "Error";
+      } else if (elem == null) {
+        status = "NA";
+      } else if (Number(cellValue[3]) === 100) {
+        status = "Completed";
+      } else {
+        status = cellValue[4];
+      }
 
       return (
-        <td onClick={() => this.setShowModal(true, elem)}>
+        <td
+          // onClick={() =>
+          //   isError
+          //     ? this.setShowModal(true, errorMessage)
+          //     : this.setShowModal(false)
+          // }
+          onClick={() => this.setShowModal(true, elem)}
+        >
           {
             <div
               className="valueContent"
               style={{ width: this.objectStyle.widthCompaniesColumn + "px" }}
             >
               <section className="bar-graph bar-graph-horizontal bar-graph-one">
-                {elem == null
-                  ? this.renderBar(0, "NA", elem)
-                  : this.renderBar(Number(cellValue[3]), cellValue[4], elem)}
+                {this.renderBar(progress, status, elem)}
               </section>
               <p className="infoCell">
                 {elem == null
@@ -203,34 +253,14 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     });
   }
 
-  renderBar(progress: number, status: string = "", isNull: any) {
-    let barColor: string = "";
-
-    if (status === "NA") {
-      barColor = this.objectStyle?.naBar;
-    } else if (status === " Completed") {
-      barColor = this.objectStyle?.completedBar;
-    } else if (status === " On Track") {
-      barColor = this.objectStyle?.onTrackBar;
-    } else if (status === " Delayed") {
-      barColor = this.objectStyle?.delayedBar;
-    } else if (status === " Cancelled") {
-      barColor = this.objectStyle?.cancelledBar;
-    } else if (status === " Overdue") {
-      barColor = this.objectStyle?.overdueBar;
-    } else if (status === " On Hold") {
-      barColor = this.objectStyle?.onHoldBar;
-    } else {
-      barColor = this.objectStyle?.noStatusBar;
-    }
+  renderBar(progress: string, status: string = "", elem: string) {
+    const barColor: string = this.getColorFomStatus(status);
 
     const style = {
-      width: `${progress}%`,
+      width: progress,
       backgroundColor: barColor,
       height: `100%`,
     };
-
-    // isNaN(progress)
 
     return (
       <React.Fragment>
@@ -239,35 +269,49 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             className="bar-value-element"
             style={{ color: this.objectStyle?.textColorBar }}
           >
-            {isNull == null
-              ? `NA`
-              : progress !== 100
-              ? `${progress}%`
-              : `Completed`}
+            {progress}
           </div>
         </div>
         <div
           className="bar-progress bar-one"
           style={{
             background:
-              isNull == null
+              status == "NA"
                 ? this.objectStyle.naBar
                 : this.objectStyle.backgroundBar,
           }}
         >
-          <div
-            className="bar"
-            data-percentage={progress !== 100 ? `${progress}%` : `Completed`}
-            style={style}
-          ></div>
+          <div className="bar" data-percentage={progress} style={style}></div>
         </div>
       </React.Fragment>
     );
   }
 
-  private testClick(test) {
-    console.log(test);
+  private getColorFomStatus(status: string): string {
+    let barColor: string;
+    if (status === "Error") {
+      barColor = this.objectStyle?.noStatusBar;
+    } else if (status === "NA") {
+      barColor = this.objectStyle?.naBar;
+    } else if (status === "Completed") {
+      barColor = this.objectStyle?.completedBar;
+    } else if (status === "On Track") {
+      barColor = this.objectStyle?.onTrackBar;
+    } else if (status === "Delayed") {
+      barColor = this.objectStyle?.delayedBar;
+    } else if (status === "Cancelled") {
+      barColor = this.objectStyle?.cancelledBar;
+    } else if (status === "Overdue") {
+      barColor = this.objectStyle?.overdueBar;
+    } else if (status === "On Hold") {
+      barColor = this.objectStyle?.onHoldBar;
+    } else {
+      barColor = this.objectStyle?.noStatusBar;
+    }
+    return barColor;
   }
+
+  private testClick(test) {}
 
   private static updateCallback: (data: object) => void = null;
 
@@ -290,7 +334,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   public MyVerticallyCenteredModal(props) {
-    console.log("holis");
     this.showModal = true;
   }
 }

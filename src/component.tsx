@@ -1,7 +1,8 @@
 import * as React from "react";
 import powerbi from "powerbi-visuals-api";
-import DataViewMatrix = powerbi.DataViewMatrix;
+import DataViewMatrixNode = powerbi.DataViewMatrix;
 import { TableSettings } from "./settings";
+import { orderBy } from "lodash";
 
 type ThumbReact = {
   left: number;
@@ -9,7 +10,8 @@ type ThumbReact = {
 } | null;
 
 export interface State {
-  matrix: DataViewMatrix;
+  columnsValues: any;
+  rowsValues: {}[];
   size: number;
   showModal?: boolean;
   errorMessage?: string;
@@ -23,7 +25,8 @@ export interface State {
 }
 
 export const initialState: State = {
-  matrix: null,
+  columnsValues: [],
+  rowsValues: [],
   size: 200,
   showModal: false,
   errorMessage: "",
@@ -35,7 +38,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   private objectStyle: TableSettings;
   private showModal: boolean;
   private errorMessage: string;
-  private matrix: any;
+  private rowsValues: {}[];
+  private columnsValues: [];
+  private stateSort: boolean = false;
+
   constructor(props: any) {
     super(props);
     this.state = initialState;
@@ -44,8 +50,16 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   render() {
     // const [, updateState] = React.useState();
     // const forceUpdate = React.useCallback(() => updateState({}), []);
-    const { matrix, size, showModal, errorMessage, objectStyle } = this.state;
-    this.matrix = matrix;
+    const {
+      columnsValues,
+      rowsValues,
+      size,
+      showModal,
+      errorMessage,
+      objectStyle,
+    } = this.state;
+    this.columnsValues = columnsValues;
+    this.rowsValues = rowsValues;
     this.showModal = showModal;
     this.errorMessage = errorMessage;
     const style: React.CSSProperties = {
@@ -59,9 +73,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
 
     this.objectStyle = objectStyle;
 
-    const columnsValues = matrix?.columns?.root?.children;
-    const rowsValues = matrix?.rows?.root?.children;
-
     return (
       <div className="mainDiv">
         <table>
@@ -70,7 +81,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               <th
                 className="sticky-col first-col"
                 onClick={() =>
-                  this.sortMatrix({ column: "Project Name", matrix: matrix })
+                  this.sorting({
+                    column: "PN",
+                    rowsValues: rowsValues,
+                  })
                 }
                 style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
               >
@@ -79,7 +93,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               <th
                 className="sticky-col second-col"
                 onClick={() =>
-                  this.sortMatrix({ column: "Project Name", matrix: matrix })
+                  this.sorting({
+                    column: "CD",
+                    rowsValues: rowsValues,
+                  })
                 }
                 style={{ left: objectStyle.widthFirstColumn + "px" }}
               >
@@ -88,7 +105,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               <th
                 className="sticky-col third-col"
                 onClick={() =>
-                  this.sortMatrix({ column: "Progress", matrix: matrix })
+                  this.sorting({
+                    column: "PR",
+                    rowsValues: rowsValues,
+                  })
                 }
                 style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
               >
@@ -107,10 +127,8 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
           </thead>
           <tbody>
             {rowsValues?.map((property, index) => {
-              const projectName = property.value as string;
-              const rowData = Object.keys(property.values).map(
-                (key) => property.values[key].value
-              );
+              const projectName = property["PN"] as string;
+              const rowData = property["CellValues"];
               const completionDate = rowData
                 .find((row) => row !== null)
                 .split("|")[0];
@@ -195,7 +213,8 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   setShowModal(arg0: boolean, errorMessage?: string) {
     this.showModal = arg0;
     ReactAwesomeTable.update({
-      matrix: this.matrix,
+      columnsValues: this.columnsValues,
+      rowsValues: this.rowsValues,
       size: 200,
       showModal: arg0,
       errorMessage: errorMessage,
@@ -311,7 +330,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
 
   private getColorFomStatus(status: string): string {
     let barColor: string;
-    debugger;
     if (status === "Error") {
       barColor = this.objectStyle?.noStatusBar;
     } else if (status === "NA") {
@@ -334,17 +352,62 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     return barColor;
   }
 
-  private sortMatrix(props) {
-    debugger;
-    const { column, matrix } = props;
+  private sorting(props) {
+    const { column, rowsValues } = props;
     console.log("column", column);
-    console.log("matrix", matrix);
-    // ReactAwesomeTable.update({
-    //   matrix: null,
-    //   size: 200,
-    //   showModal: false,
-    //   errorMessage: "",
-    // });
+    console.log("rowsValues", rowsValues);
+
+    this.stateSort = !this.stateSort;
+
+    if (column === "PN") {
+      this.rowsValues = orderBy(
+        rowsValues,
+        [(o) => o[column].toLowerCase()],
+        this.stateSort ? ["desc"] : ["asc"]
+      );
+    } else if (column === "CD") {
+      this.rowsValues = rowsValues.sort((a, b) => {
+        const dateA = this.parseDate(a);
+        const dateB = this.parseDate(b);
+
+        return this.stateSort
+          ? dateA.getTime() - dateB.getTime()
+          : dateB.getTime() - dateA.getTime();
+      });
+    } else if (column === "PR") {
+      this.rowsValues = orderBy(
+        rowsValues,
+        [(o) => Number(o[column])],
+        this.stateSort ? ["desc"] : ["asc"]
+      );
+    }
+
+    ReactAwesomeTable.update({
+      columnsValues: this.columnsValues,
+      rowsValues: this.rowsValues,
+      size: 200,
+      showModal: false,
+      errorMessage: "",
+    });
+  }
+
+  private parseDate(s) {
+    var months = {
+      jan: 0,
+      feb: 1,
+      mar: 2,
+      apr: 3,
+      may: 4,
+      jun: 5,
+      jul: 6,
+      aug: 7,
+      sep: 8,
+      oct: 9,
+      nov: 10,
+      dec: 11,
+    };
+    var p = s.CD?.split("-");
+    return new Date(Number("20" + p[1]), months[p[0].toLowerCase()], 1);
   }
 
   private static updateCallback: (data: object) => void = null;

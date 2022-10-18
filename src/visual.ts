@@ -68,13 +68,36 @@ export class Visual implements IVisual {
       });
       event.preventDefault();
     });
-
+    const cleanedData = this.builder(options.dataViews[0].matrix);
     ReactAwesomeTable.update({
-      matrix: options.dataViews[0].matrix,
+      columnsValues: options.dataViews[0].matrix?.columns?.root?.children,
+      rowsValues: cleanedData,
       size: size,
       errorMessage: null,
       objectStyle: objectStyle,
     });
+  }
+
+  private builder(matrix: powerbi.DataViewMatrix) {
+    const listRow: {}[] = [];
+
+    matrix?.rows?.root?.children.map((row) => {
+      listRow.push({
+        PN: row.value,
+        CD: Object.keys(row.values)
+          .map((key) => row.values[key].value)
+          .find((row) => row !== null)
+          .split("|")[0],
+        PR: Object.keys(row.values)
+          .map((key) => row.values[key].value)
+          .find((row) => row !== null)
+          .split("|")[1],
+        CellValues: [
+          ...Object.keys(row.values).map((key) => row.values[key].value),
+        ],
+      });
+    });
+    return listRow;
   }
 
   public enumerateObjectInstances(

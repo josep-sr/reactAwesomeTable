@@ -42,6 +42,8 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   render() {
+    // const [, updateState] = React.useState();
+    // const forceUpdate = React.useCallback(() => updateState({}), []);
     const { matrix, size, showModal, errorMessage, objectStyle } = this.state;
     this.matrix = matrix;
     this.showModal = showModal;
@@ -67,19 +69,27 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             <tr>
               <th
                 className="sticky-col first-col"
-                // onClick={() => this.testClick({ patata: "test" })}
+                onClick={() =>
+                  this.sortMatrix({ column: "Project Name", matrix: matrix })
+                }
                 style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Project Name</p>
               </th>
               <th
                 className="sticky-col second-col"
+                onClick={() =>
+                  this.sortMatrix({ column: "Project Name", matrix: matrix })
+                }
                 style={{ left: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Completion Date</p>
               </th>
               <th
                 className="sticky-col third-col"
+                onClick={() =>
+                  this.sortMatrix({ column: "Progress", matrix: matrix })
+                }
                 style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
               >
                 <p>Progress</p>
@@ -119,8 +129,9 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 isError = true;
               }
 
-              debugger;
-              console.log(rowData);
+              const colorProgress = rowData
+                .find((row) => row !== null)
+                .split("|")[2];
 
               return (
                 <tr key={index}>
@@ -144,7 +155,12 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                   >
                     <div className="svg-container">
                       <svg width="17" height="17">
-                        <circle cx="8" cy="8" r="8" fill="red" />
+                        <circle
+                          cx="8"
+                          cy="8"
+                          r="8"
+                          fill={this.getColorFomStatus(colorProgress)}
+                        />
                       </svg>
                     </div>
                     <p className="progressStauts">
@@ -189,7 +205,8 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   renderTableData(rowData: string[]) {
     return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
-      let isError: boolean = false;
+      let { isError, progress, status } = this.magicJordan(elem, cellValue);
+
       let errorMessage: string;
 
       if (cellValue.length < 3 && cellValue.length > 1) {
@@ -198,28 +215,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       } else if (cellValue.length === 6 && cellValue[5] !== "") {
         isError = true;
         errorMessage = cellValue[5];
-      }
-
-      let progress: string;
-      if (isError) {
-        progress = "Error";
-      } else if (elem == null) {
-        progress = "NA";
-      } else if (Number(cellValue[3]) === 100) {
-        progress = "Completed";
-      } else {
-        progress = Number(cellValue[3]) + "%";
-      }
-
-      let status: string = "";
-      if (isError) {
-        status = "Error";
-      } else if (elem == null) {
-        status = "NA";
-      } else if (Number(cellValue[3]) === 100) {
-        status = "Completed";
-      } else {
-        status = cellValue[4];
       }
 
       return (
@@ -244,7 +239,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                   ? elem
                   : cellValue[4] === " Completed"
                   ? cellValue[0]
-                  : cellValue[2]}
+                  : cellValue[3]}
               </p>
             </div>
           }
@@ -287,8 +282,36 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     );
   }
 
+  private magicJordan(elem, cellValue) {
+    let isError: boolean = false;
+
+    let progress: string;
+    if (isError) {
+      progress = "Error";
+    } else if (elem == null) {
+      progress = "NA";
+    } else if (Number(cellValue[4]) === 100) {
+      progress = "Completed";
+    } else {
+      progress = Number(cellValue[4]) + "%";
+    }
+
+    let status: string = "";
+    if (isError) {
+      status = "Error";
+    } else if (elem == null) {
+      status = "NA";
+    } else if (Number(cellValue[4]) === 100) {
+      status = "Completed";
+    } else {
+      status = cellValue[5];
+    }
+    return { isError, progress, status };
+  }
+
   private getColorFomStatus(status: string): string {
     let barColor: string;
+    debugger;
     if (status === "Error") {
       barColor = this.objectStyle?.noStatusBar;
     } else if (status === "NA") {
@@ -311,7 +334,18 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     return barColor;
   }
 
-  private testClick(test) {}
+  private sortMatrix(props) {
+    debugger;
+    const { column, matrix } = props;
+    console.log("column", column);
+    console.log("matrix", matrix);
+    // ReactAwesomeTable.update({
+    //   matrix: null,
+    //   size: 200,
+    //   showModal: false,
+    //   errorMessage: "",
+    // });
+  }
 
   private static updateCallback: (data: object) => void = null;
 

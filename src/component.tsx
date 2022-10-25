@@ -40,7 +40,13 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   private errorMessage: string;
   private rowsValues: {}[];
   private columnsValues: [];
-  private stateSort: boolean = false;
+  private stateSort1: boolean = false;
+  private stateSort2: boolean = false;
+  private stateSort3: boolean = false;
+  private arrowUpWard: string =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDgiIHdpZHRoPSI0OCI+PHBhdGggZD0iTTI0IDQwcS0uNjUgMC0xLjA3NS0uNDI1LS40MjUtLjQyNS0uNDI1LTEuMDc1VjEzLjdMMTEuMTUgMjUuMDVxLS40NS40NS0xLjA1LjQ1LS42IDAtMS4wNS0uNDVROC42IDI0LjYgOC42IDI0cTAtLjYuNDUtMS4wNWwxMy45LTEzLjlxLjI1LS4yNS41MjUtLjM1LjI3NS0uMS41MjUtLjEuMyAwIC41NS4xLjI1LjEuNS4zNWwxMy45IDEzLjlxLjQ1LjQ1LjQ1IDEuMDUgMCAuNi0uNDUgMS4wNS0uNDUuNDUtMS4wNS40NS0uNiAwLTEuMDUtLjQ1TDI1LjUgMTMuN3YyNC44cTAgLjY1LS40MjUgMS4wNzVRMjQuNjUgNDAgMjQgNDBaIi8+PC9zdmc+";
+  private arrowDownWard: string =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDgiIHdpZHRoPSI0OCI+PHBhdGggZD0iTTI0IDM5LjRxLS4yNSAwLS41MjUtLjF0LS41MjUtLjM1bC0xMy45LTEzLjlROC42IDI0LjYgOC42IDI0cTAtLjYuNDUtMS4wNS40NS0uNDUgMS4wNS0uNDUuNiAwIDEuMDUuNDVMMjIuNSAzNC4zVjkuNXEwLS42NS40MjUtMS4wNzVRMjMuMzUgOCAyNCA4cS42NSAwIDEuMDc1LjQyNS40MjUuNDI1LjQyNSAxLjA3NXYyNC44bDExLjM1LTExLjM1cS40NS0uNDUgMS4wNS0uNDUuNiAwIDEuMDUuNDUuNDUuNDUuNDUgMS4wNSAwIC42LS40NSAxLjA1bC0xMy45IDEzLjlxLS4yNS4yNS0uNS4zNS0uMjUuMS0uNTUuMVoiLz48L3N2Zz4=";
 
   constructor(props: any) {
     super(props);
@@ -89,6 +95,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Project Name</p>
+                <img
+                  className="arrow"
+                  src={this.stateSort1 ? this.arrowUpWard : this.arrowDownWard}
+                />
               </th>
               <th
                 className="sticky-col second-col"
@@ -101,6 +111,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 style={{ left: objectStyle.widthFirstColumn + "px" }}
               >
                 <p>Completion Date</p>
+                <img
+                  className="arrow"
+                  src={this.stateSort2 ? this.arrowUpWard : this.arrowDownWard}
+                />
               </th>
               <th
                 className="sticky-col third-col"
@@ -113,6 +127,10 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
               >
                 <p>Progress</p>
+                <img
+                  className="arrow"
+                  src={this.stateSort3 ? this.arrowUpWard : this.arrowDownWard}
+                />
               </th>
               {columnsValues?.map((property) => {
                 return (
@@ -129,27 +147,17 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
             {rowsValues?.map((property, index) => {
               const projectName = property["PN"] as string;
               const rowData = property["CellValues"];
-              const completionDate = rowData
-                .find((row) => row !== null)
-                .split("|")[0];
-
-              const progressStautsValue = rowData
-                .find((row) => row !== null)
-                .split("|")[1];
 
               let isError: boolean = false;
               if (
-                completionDate === null ||
-                completionDate === undefined ||
-                completionDate === "" ||
-                Number.isNaN(progressStautsValue)
+                property["CD"] === null ||
+                property["CD"] === undefined ||
+                property["CD"] === "" ||
+                Number.isNaN(property["PR"]) ||
+                this.parseDate(property).getFullYear() === 9999
               ) {
                 isError = true;
               }
-
-              const colorProgress = rowData
-                .find((row) => row !== null)
-                .split("|")[2];
 
               return (
                 <tr key={index}>
@@ -164,7 +172,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                     style={{ left: objectStyle.widthFirstColumn + "px" }}
                   >
                     <p className="completionDate">
-                      {isError ? "Error" : completionDate}
+                      {isError ? "Error" : property["CD"]}
                     </p>
                   </td>
                   <td
@@ -177,12 +185,15 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                           cx="8"
                           cy="8"
                           r="8"
-                          fill={this.getColorFomStatus(colorProgress)}
+                          fill={this.getColorFomStatus(
+                            property["STATUS"],
+                            true
+                          )}
                         />
                       </svg>
                     </div>
                     <p className="progressStauts">
-                      {isError ? "Error" : Number(progressStautsValue) + "%"}
+                      {isError ? "Error" : Number(property["PR"]) + "%"}
                     </p>
                   </td>
                   {this.renderTableData(rowData)}
@@ -224,26 +235,20 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   renderTableData(rowData: string[]) {
     return rowData.map((elem) => {
       const cellValue = elem == null ? "\u00A0" : elem.split("|");
-      let { isError, progress, status } = this.magicJordan(elem, cellValue);
 
-      let errorMessage: string;
-
-      if (cellValue.length < 3 && cellValue.length > 1) {
-        isError = true;
-        errorMessage = cellValue[1];
-      } else if (cellValue.length === 6 && cellValue[5] !== "") {
-        isError = true;
-        errorMessage = cellValue[5];
-      }
+      let { isError, progress, status, errorMessage } = this.getStatusBar(
+        elem,
+        cellValue
+      );
 
       return (
         <td
-          // onClick={() =>
-          //   isError
-          //     ? this.setShowModal(true, errorMessage)
-          //     : this.setShowModal(false)
-          // }
-          onClick={() => this.setShowModal(true, elem)}
+          onClick={() =>
+            isError
+              ? this.setShowModal(true, errorMessage)
+              : this.setShowModal(false)
+          }
+          // onClick={() => this.setShowModal(true, elem)}
         >
           {
             <div
@@ -301,8 +306,20 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     );
   }
 
-  private magicJordan(elem, cellValue) {
+  private getStatusBar(elem, cellValue) {
     let isError: boolean = false;
+    let errorMessage: string;
+
+    if (cellValue.length < 3 && cellValue.length > 1) {
+      isError = true;
+      errorMessage = cellValue[1];
+    } else if (cellValue.length === 6 && cellValue[5] !== "") {
+      isError = true;
+      errorMessage = cellValue[5];
+    } else if (cellValue.length === 1 && Number.isNaN(Number(elem))) {
+      isError = true;
+      errorMessage = cellValue[0];
+    }
 
     let progress: string;
     if (isError) {
@@ -325,10 +342,14 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     } else {
       status = cellValue[5];
     }
-    return { isError, progress, status };
+    return { isError, progress, status, errorMessage };
   }
 
-  private getColorFomStatus(status: string): string {
+  private getColorFomStatus(
+    status: string,
+    isStatusGeneral: boolean = false
+  ): string {
+    debugger;
     let barColor: string;
     if (status === "Error") {
       barColor = this.objectStyle?.noStatusBar;
@@ -347,38 +368,39 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     } else if (status === "On Hold") {
       barColor = this.objectStyle?.onHoldBar;
     } else {
-      barColor = this.objectStyle?.noStatusBar;
+      if (isStatusGeneral && status === undefined) {
+        barColor = "#ffffff00";
+      } else {
+        barColor = this.objectStyle?.noStatusBar;
+      }
     }
     return barColor;
   }
 
   private sorting(props) {
     const { column, rowsValues } = props;
-    console.log("column", column);
-    console.log("rowsValues", rowsValues);
-
-    this.stateSort = !this.stateSort;
-
     if (column === "PN") {
+      this.stateSort1 = !this.stateSort1;
       this.rowsValues = orderBy(
         rowsValues,
         [(o) => o[column].toLowerCase()],
-        this.stateSort ? ["desc"] : ["asc"]
+        this.stateSort1 ? ["desc"] : ["asc"]
       );
     } else if (column === "CD") {
+      this.stateSort2 = !this.stateSort2;
       this.rowsValues = rowsValues.sort((a, b) => {
         const dateA = this.parseDate(a);
         const dateB = this.parseDate(b);
-
-        return this.stateSort
+        return this.stateSort2
           ? dateA.getTime() - dateB.getTime()
           : dateB.getTime() - dateA.getTime();
       });
     } else if (column === "PR") {
+      this.stateSort3 = !this.stateSort3;
       this.rowsValues = orderBy(
         rowsValues,
         [(o) => Number(o[column])],
-        this.stateSort ? ["desc"] : ["asc"]
+        this.stateSort3 ? ["desc"] : ["asc"]
       );
     }
 
@@ -392,7 +414,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   }
 
   private parseDate(s) {
-    var months = {
+    const months = {
       jan: 0,
       feb: 1,
       mar: 2,
@@ -406,8 +428,17 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
       nov: 10,
       dec: 11,
     };
-    var p = s.CD?.split("-");
-    return new Date(Number("20" + p[1]), months[p[0].toLowerCase()], 1);
+    const p = s.CD?.split("-");
+    const date: Date = new Date(
+      Number("20" + p[1]),
+      months[p[0].toLowerCase()],
+      1
+    );
+    return this.dateIsValid(date) ? date : new Date(9999, 1, 1);
+  }
+
+  private dateIsValid(date: Date) {
+    return date instanceof Date && !isNaN(date.valueOf());
   }
 
   private static updateCallback: (data: object) => void = null;

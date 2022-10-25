@@ -6,6 +6,7 @@ import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructor
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import IVisual = powerbi.extensibility.visual.IVisual;
 import IViewport = powerbi.IViewport;
+
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
@@ -92,6 +93,10 @@ export class Visual implements IVisual {
           .map((key) => row.values[key].value)
           .find((row) => row !== null)
           .split("|")[1],
+        STATUS: Object.keys(row.values)
+          .map((key) => row.values[key].value)
+          .find((row) => row !== null)
+          .split("|")[2],
         CellValues: [
           ...Object.keys(row.values).map((key) => row.values[key].value),
         ],

@@ -64,3 +64,5 @@ typings/
 webpack.statistics.dev.html
 
 .vscode
+
+.zip

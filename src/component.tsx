@@ -44,9 +44,9 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
   private stateSort2: boolean = false;
   private stateSort3: boolean = false;
   private arrowUpWard: string =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDgiIHdpZHRoPSI0OCI+PHBhdGggZD0iTTI0IDQwcS0uNjUgMC0xLjA3NS0uNDI1LS40MjUtLjQyNS0uNDI1LTEuMDc1VjEzLjdMMTEuMTUgMjUuMDVxLS40NS40NS0xLjA1LjQ1LS42IDAtMS4wNS0uNDVROC42IDI0LjYgOC42IDI0cTAtLjYuNDUtMS4wNWwxMy45LTEzLjlxLjI1LS4yNS41MjUtLjM1LjI3NS0uMS41MjUtLjEuMyAwIC41NS4xLjI1LjEuNS4zNWwxMy45IDEzLjlxLjQ1LjQ1LjQ1IDEuMDUgMCAuNi0uNDUgMS4wNS0uNDUuNDUtMS4wNS40NS0uNiAwLTEuMDUtLjQ1TDI1LjUgMTMuN3YyNC44cTAgLjY1LS40MjUgMS4wNzVRMjQuNjUgNDAgMjQgNDBaIi8+PC9zdmc+";
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAARdJREFUaEPtltENwjAQQ90N2AQ2gFFgEzaBUWADugkjoJNSKUKALnEsVMl8Xw4/Pxo6YeWfaeX5YYB/G7QBGyAb8E+ILJA+bgN0heQCGyALpI/bAF0hucAGyALp42oDu5LwQSf9skAJcARwKd97AnBVQKgA6vBLbgmEAqAOP5f0W5WJ0QDv4Q8l+A2ABGIkwKfwzwKwASCBGAXwK/zyDEggRgBkwssgWICW8BIIBqAn/HCIXgAm/FCIXoC4UfYA4p6Pq3K5bVr/bOsH+152Ne3oBYh3nLBwJsLXJmJXlNL8ztQL0NSSctgAynYzu20g05JyxgaU7WZ220CmJeWMDSjbzey2gUxLyhkbULab2W0DmZaUM6s38AKfLzMx/ABl9QAAAABJRU5ErkJggg==";
   private arrowDownWard: string =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDgiIHdpZHRoPSI0OCI+PHBhdGggZD0iTTI0IDM5LjRxLS4yNSAwLS41MjUtLjF0LS41MjUtLjM1bC0xMy45LTEzLjlROC42IDI0LjYgOC42IDI0cTAtLjYuNDUtMS4wNS40NS0uNDUgMS4wNS0uNDUuNiAwIDEuMDUuNDVMMjIuNSAzNC4zVjkuNXEwLS42NS40MjUtMS4wNzVRMjMuMzUgOCAyNCA4cS42NSAwIDEuMDc1LjQyNS40MjUuNDI1LjQyNSAxLjA3NXYyNC44bDExLjM1LTExLjM1cS40NS0uNDUgMS4wNS0uNDUuNiAwIDEuMDUuNDUuNDUuNDUuNDUgMS4wNSAwIC42LS40NSAxLjA1bC0xMy45IDEzLjlxLS4yNS4yNS0uNS4zNS0uMjUuMS0uNTUuMVoiLz48L3N2Zz4=";
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAASRJREFUaEPtl+EJwjAUhL9u4ia6gSOoG7iBruAGuoEruImjSLCBgK2Y3IsiXKF/St7lvrsQ6MCfP8Of+8cAv27QDbgBMQEfITFAedwNyBGKAm5ADFAedwNyhKKAGxADlMdbG1gAS+AiO3gKrID7+FZJtgJcgTVwBnZVO74uThob4DaCVMm1AhyBw7iTApHNJ6kTsK9yD9IfWbl5C0Q5n47ittZ8Wt/aQN6rFSLEfARA0qiFCDMfBVADEWo+EuATiHDz0QDvILqY7wEwBZG+5Rum+baZu6HUW2hOt0w8rwk336uBqSu2i/neAOXRSY10eXodoS5mp0QN8LWoZzZyA25ATMBHSAxQHncDcoSigBsQA5TH3YAcoSjgBsQA5XE3IEcoCjwAOKYrMTUz5Q0AAAAASUVORK5CYII=";
 
   constructor(props: any) {
     super(props);
@@ -85,7 +85,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
           <thead>
             <tr>
               <th
-                className="sticky-col first-col"
+                className="first-col"
                 onClick={() =>
                   this.sorting({
                     column: "PN",
@@ -94,14 +94,18 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 }
                 style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
               >
-                <p>Project Name</p>
-                <img
-                  className="arrow"
-                  src={this.stateSort1 ? this.arrowUpWard : this.arrowDownWard}
-                />
+                <div className="textAndIconFirst">
+                  <p>Project Name</p>
+                  <img
+                    className="arrow"
+                    src={
+                      this.stateSort1 ? this.arrowUpWard : this.arrowDownWard
+                    }
+                  />
+                </div>
               </th>
               <th
-                className="sticky-col second-col"
+                className="second-col"
                 onClick={() =>
                   this.sorting({
                     column: "CD",
@@ -110,14 +114,18 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 }
                 style={{ left: objectStyle.widthFirstColumn + "px" }}
               >
-                <p>Completion Date</p>
-                <img
-                  className="arrow"
-                  src={this.stateSort2 ? this.arrowUpWard : this.arrowDownWard}
-                />
+                <div className="textAndIcon">
+                  <p>Completion Date</p>
+                  <img
+                    className="arrow"
+                    src={
+                      this.stateSort2 ? this.arrowUpWard : this.arrowDownWard
+                    }
+                  />
+                </div>
               </th>
               <th
-                className="sticky-col third-col"
+                className="third-col"
                 onClick={() =>
                   this.sorting({
                     column: "PR",
@@ -126,11 +134,15 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                 }
                 style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
               >
-                <p>Progress</p>
-                <img
-                  className="arrow"
-                  src={this.stateSort3 ? this.arrowUpWard : this.arrowDownWard}
-                />
+                <div className="textAndIcon">
+                  <p>Progress</p>
+                  <img
+                    className="arrow"
+                    src={
+                      this.stateSort3 ? this.arrowUpWard : this.arrowDownWard
+                    }
+                  />
+                </div>
               </th>
               {columnsValues?.map((property) => {
                 return (
@@ -162,13 +174,13 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
               return (
                 <tr key={index}>
                   <td
-                    className="sticky-col first-col"
+                    className="first-col"
                     style={{ minWidth: objectStyle.widthFirstColumn + "px" }}
                   >
                     <p className="projectName">{projectName}</p>
                   </td>
                   <td
-                    className="sticky-col second-col"
+                    className="second-col"
                     style={{ left: objectStyle.widthFirstColumn + "px" }}
                   >
                     <p className="completionDate">
@@ -176,7 +188,7 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
                     </p>
                   </td>
                   <td
-                    className="sticky-col third-col-value"
+                    className="third-col-value"
                     style={{ left: objectStyle.widthFirstColumn + 145 + "px" }}
                   >
                     <div className="svg-container">
@@ -349,7 +361,6 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
     status: string,
     isStatusGeneral: boolean = false
   ): string {
-    debugger;
     let barColor: string;
     if (status === "Error") {
       barColor = this.objectStyle?.noStatusBar;

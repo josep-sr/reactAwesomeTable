@@ -1,12 +1,11 @@
 "use strict";
 import powerbi from "powerbi-visuals-api";
-
+import * as pbi from "powerbi-client";
 import DataView = powerbi.DataView;
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
 import IVisual = powerbi.extensibility.visual.IVisual;
 import IViewport = powerbi.IViewport;
-
 import VisualObjectInstance = powerbi.VisualObjectInstance;
 import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions;
 import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject;
@@ -15,6 +14,8 @@ import { TableSettings, VisualSettings } from "./settings";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ReactAwesomeTable, initialState } from "./component";
+
+import IVisualHost = powerbi.extensibility.IVisualHost;
 
 import "./../style/visual.less";
 
@@ -26,7 +27,10 @@ export class Visual implements IVisual {
   private settings: VisualSettings;
   private selectionManager: ISelectionManager;
 
+  private host: IVisualHost;
+
   constructor(options: VisualConstructorOptions) {
+    this.host = options.host;
     this.selectionManager = options.host.createSelectionManager();
     this.reactRoot = React.createElement(ReactAwesomeTable, {});
     this.target = options.element;
@@ -35,6 +39,12 @@ export class Visual implements IVisual {
   }
 
   public update(options: VisualUpdateOptions) {
+    // debugger;
+    // const host = this.host;
+
+    // let models = window["powerbi-client"]?.models;
+    // debugger;
+
     this.clear();
     if (!options) {
       return;

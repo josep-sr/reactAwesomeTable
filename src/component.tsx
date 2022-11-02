@@ -286,9 +286,9 @@ export class ReactAwesomeTable extends React.Component<{}, State> {
 
   renderBar(progress: string, status: string = "", elem: string) {
     const barColor: string = this.getColorFomStatus(status);
-
+    debugger;
     const style = {
-      width: progress,
+      width: progress.includes("%") ? progress : "0%",
       backgroundColor: barColor,
       height: `100%`,
     };
